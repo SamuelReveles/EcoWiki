@@ -44,7 +44,7 @@ class Server{
     routes() {
         //Rutas
         this.app.use(this.mainPath, require('../routes/usuarios.routes'));
-        // this.app.use(this.adminPath, require('../routes/admin'));
+        this.app.use(this.adminPath, require('../routes/admin.routes'));
     }
 
     listen(){

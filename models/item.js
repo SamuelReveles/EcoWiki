@@ -35,6 +35,9 @@ const itemSchema = Schema({
     editado: {
         type: Boolean,
         default: false
+    },
+    origin: {
+        type: Schema.Types.ObjectId
     }
 });
 
