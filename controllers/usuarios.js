@@ -8,9 +8,9 @@ const { returnItem, returnCreated, returnBadRequest } = require('../helpers/retu
 
 const createItem = async (req = request, res = response) => {
     const item = new Item({
-        titulo: req.body.title,
-        categoria: req.body.category,
-        descripcion: req.body.description,
+        titulo: req.body.titulo,
+        categoria: req.body.categoria,
+        descripcion: req.body.descripcion,
         distribuidores: req.body.distribuidores,
         referencias: req.body.referencias,
         autor: req.body.autor
@@ -23,13 +23,13 @@ const createItem = async (req = request, res = response) => {
 
 const editItem = async (req = request, res = response) => {
 
-    if( !req.body.origin || !req.body.title || !req.body.category || !req.body.description ||
+    if( !req.body.titulo || !req.body.categoria || !req.body.descripcion ||
         !req.body.distribuidores || !req.body.referencias || !req.body.autor || !req.body.origin) return returnBadRequest(res);
 
     const item = new Item({
-        titulo: req.body.title,
-        categoria: req.body.category,
-        descripcion: req.body.description,
+        titulo: req.body.titulo,
+        categoria: req.body.categoria,
+        descripcion: req.body.descripcion,
         distribuidores: req.body.distribuidores,
         referencias: req.body.referencias,
         autor: req.body.autor,
