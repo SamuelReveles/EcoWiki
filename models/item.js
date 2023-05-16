@@ -38,7 +38,11 @@ const itemSchema = Schema({
     },
     origin: {
         type: Schema.Types.ObjectId
-    }
+    },
+    visitas: {
+        type: Number,
+        default: 0
+    },
 });
 
 itemSchema.methods.toJSON = function() {
