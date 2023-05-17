@@ -1,4 +1,5 @@
 const { request, response } = require('express');
+const cloudinary = require('cloudinary').v2;
 
 const Item = require('../models/item');
 const { returnAccepted, returnAccess, returnAdminItem, returnBadRequest } = require('../helpers/return');
@@ -17,10 +18,10 @@ const deleteItem = async (req = request, res = response) => {
 }
 
 const acceptItem = async (req = request, res = response) => {
-    if(req.body.id) {
+    if(req.body.id && req.body.accepted !== undefined) {
         if(await Item.findById(req.body.id) === null) return returnBadRequest(res);
         let item = await Item.findById(req.body.id);
-        if(req.body.accepted === true) { 
+        if(req.body.accepted === "true") {
             if(item.origin) {
                 item._id = item.origin;
                 item.editado = false;

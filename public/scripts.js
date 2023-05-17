@@ -11,11 +11,15 @@ function test() {
   // submitArticle();
   // getCategories();
   // loginAdmin();
-  // acceptArticle();
+  // approveArticle();
   // searchArticlesByTitle();
   // searchArticlesByCategory();
   // editArticle();
   // getArticlesToReview();
+
+  document.getElementById("creation-form").addEventListener("submit", submitArticle);
+  document.getElementById("edition-form").addEventListener("submit", editArticle);
+  document.getElementById("approval-form").addEventListener("submit", approveArticle);
 }
 
 /**
@@ -30,8 +34,8 @@ async function fetchAPI(method, route, body) {
     "http://localhost:8080/api" + route, 
     {
       method,
-      headers: {"Content-Type": "application/json"},
-      body: body ? JSON.stringify(body) : undefined,
+      headers: {"Encryption-Type": "multipart/form-data"},
+      body,
     }
   );
 
@@ -73,18 +77,12 @@ async function searchArticlesByCategory() {
 /**
  * Crea un nuevo articulo en la BD a ser revisado por el admin.
  */
-async function submitArticle() {
-  // TODO: Tomar los datos de un artículo que se esté creando.
-  const article = {
-    titulo: "Algun titulo",
-    categoria: "Test category",
-    descripcion: "Alguna descripcion...",
-    distribuidores: [ "Algunos", "distribuidores..." ],
-    referencias: "Algunas referencias...",
-    autor: "Algun autor...",
-  };
+async function submitArticle(event) {
+  event.preventDefault();
 
-  const resultData = await fetchAPI("POST", "/", article);
+  const formData = new FormData(event.currentTarget);
+
+  const resultData = await fetchAPI("POST", "/", formData);
 
   // TODO: Indicar al usuario la creación de su artículo.
   console.log("Resultado:");
@@ -94,19 +92,12 @@ async function submitArticle() {
 /**
  * Edita un artículo y lo deja pendiente de aprobación por el admin.
  */
-async function editArticle() {
-  // TODO: Obtener información del artículo en edición.
-  const article = {
-    titulo: "Algun titulo...",
-    categoria: "Alguna categoria",
-    descripcion: "Alguna descripción",
-    distribuidores: [ "Algunos", "distribuidores..." ],
-    referencias: "Algunas referencias...",
-    autor: "Algun autor...",
-    origin: undefined,
-  }
+async function editArticle(event) {
+  event.preventDefault();
 
-  const resultData = await fetchAPI("PUT", "/", article);
+  const formData = new FormData(event.currentTarget);
+
+  const resultData = await fetchAPI("PUT", "/", formData);
 
   // TODO: Indicar y bloquear la edición del artículo.
   console.log("Resultado:");
@@ -156,11 +147,11 @@ async function getArticlesToReview() {
 /**
  * Permite que el administrador apruebe un artículo.
  */
-async function approveArticle() {
-  // TODO: Obtener el id del artículo a aprobar.
-  const data = { id: undefined }
-  
-  const resultData = await fetchAPI("PUT", "/admin", data);
+async function approveArticle(event) {
+  event.preventDefault();
+
+  const formData = new FormData(event.currentTarget);
+  const resultData = await fetchAPI("PUT", "/admin", formData);
 
   // TODO: Reaccionar a la aceptación del artículo.
   console.log("Resultado:");

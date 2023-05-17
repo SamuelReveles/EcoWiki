@@ -37,14 +37,58 @@
                 <h1 class="centered-container">Inicio</h1>
                 <p>Info del sitio...</p>
                 <div class="centered-container">
-                    <button id="create-button" style="font-size: 1.5rem;">
-                        <img
-                            class="inverted icon"
-                            src="/assets/plus_icon.png"
-                            alt="crear"
-                        >
-                        <p>Crear</p>
-                    </button>
+                    <form id="creation-form">
+                        <input type="hidden" name="titulo" value="Algun titulo">
+                        <input type="hidden" name="categoria" value="Alguna categoria">
+                        <input type="hidden" name="descripcion" value="Alguna descripcion">
+                        <input type="hidden" name="distribuidores" value="Algunos distribuidores">
+                        <input type="hidden" name="referencias" value="Algunas referencias">
+                        <input type="file" name="imagen" accept="image/*">
+                        <input type="hidden" name="autor" value="Algun autor">
+
+                        <button class="main-action-button" style="font-size: 1.5rem;">
+                            <img
+                                class="inverted icon"
+                                src="/assets/plus_icon.png"
+                                alt="crear"
+                            >
+                            <p>Crear</p>
+                        </button>
+                    </form>
+
+                    <form id="edition-form">
+                        <input type="hidden" name="titulo" value="Algun titulo">
+                        <input type="hidden" name="categoria" value="Alguna categoria">
+                        <input type="hidden" name="descripcion" value="Alguna descripcion">
+                        <input type="hidden" name="distribuidores" value="Algunos distribuidores">
+                        <input type="hidden" name="referencias" value="Algunas referencias">
+                        <input type="file" name="imagen" accept="image/*">
+                        <input type="hidden" name="autor" value="Algun autor">
+                        <input type="hidden" name="origin" value="6462d7f46251a2e2e234d910">
+                        
+                        <button class="main-action-button" style="font-size: 1.5rem;">
+                            <img
+                                class="inverted icon"
+                                src="/assets/plus_icon.png"
+                                alt="crear"
+                            >
+                            <p>Editar</p>
+                        </button>
+                    </form>
+
+                    <form id="approval-form">
+                        <input type="text" name="id" placeholder="id...">
+                        <input type="hidden" name="accepted" value="true">
+
+                        <button class="main-action-button" style="font-size: 1.5rem;">
+                            <img
+                                class="inverted icon"
+                                src="/assets/plus_icon.png"
+                                alt="crear"
+                            >
+                            <p>Aprobar</p>
+                        </button>
+                    </form>
                 </div>
             </div>
         </main>

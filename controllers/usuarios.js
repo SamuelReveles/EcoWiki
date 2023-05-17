@@ -16,7 +16,6 @@ const Item = require('../models/item');
 const { returnItem, returnCreated, returnBadRequest } = require('../helpers/return');
 
 const createItem = async (req = request, res = response) => {
-
     //Subir a cloudinary y extraer el secure_url
     const { secure_url } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath);
 
@@ -39,7 +38,7 @@ const editItem = async (req = request, res = response) => {
     //Subir a cloudinary y extraer el secure_url
     const { secure_url } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath);
 
-    if( !req.body.origin || !req.body.titulo || !req.body.categoria || !req.body.descripcion ||
+    if( !req.body.titulo || !req.body.categoria || !req.body.descripcion ||
         !req.body.distribuidores || !req.body.referencias || !req.body.autor || !req.body.origin) return returnBadRequest(res);
     
     const item = new Item({

@@ -34,6 +34,7 @@ body {
 
 .centered-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 }
@@ -135,12 +136,12 @@ main {
   height: 5rem;
 }
 
-#create-button {
+.main-action-button {
   background-color: var(--primary-color);
   color: white;
 }
 
-#create-button:hover {
+.main-action-button:hover {
   background-color: var(--accent-color);
 }
 
