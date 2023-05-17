@@ -57,12 +57,6 @@ const editItem = async (req = request, res = response) => {
 
     await item.save();
     let origin = await Item.findById(req.body.origin);
-
-    const nombreArr = origin.imagen.split('/');
-    const nombre = nombreArr[nombreArr.length - 1];
-    const [ public_id, extension ] = nombre.split('.');
-    await cloudinary.uploader.destroy(public_id);
-
     origin.editado = true;
     origin.aceptado = false;
 
