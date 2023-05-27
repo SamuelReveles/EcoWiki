@@ -141,6 +141,12 @@ main {
   color: white;
 }
 
+.main-action-button > img {
+  width: 1rem;
+  height: 1rem;
+  filter: invert();
+}
+
 .main-action-button:hover {
   background-color: var(--accent-color);
 }
@@ -179,4 +185,46 @@ footer {
 footer > button:hover {
   background-color: var(--accent-color);
   cursor: pointer;
+}
+
+#category-header-span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#category-header-span > img {
+  width: 3rem;
+  height: 3rem;
+}
+
+#article-page {
+  position: relative;
+}
+
+#article-header-span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#edit-article-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+#edit-article-button > img {
+  width: 2rem;
+  height: 2rem;
+}
+
+#article-footer-span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#admin-page > h1 {
+  text-align: center;
 }

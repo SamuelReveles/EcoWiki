@@ -1,4 +1,61 @@
-document.addEventListener("DOMContentLoaded", test);
+// document.addEventListener("DOMContentLoaded", test);
+
+let homePage;
+let categoryPage;
+let editableArticlePage;
+let articlePage;
+let searchPage;
+let adminPage;
+
+let articleEditionForm;
+
+let categories = [
+  "Categoría 1",
+  "Categoría 2",
+  "Categoría 3"
+];
+
+let descriptions = [
+  "Descripcion 1",
+  "Descripcion 2",
+  "Descripcion 3"
+];
+
+document.addEventListener("DOMContentLoaded", init);
+
+function init() {
+
+  displayOnlyPage("home-page");
+  articleEditionForm = document.getElementById("article-edition-form");
+  document.getElementById("create-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    displayOnlyPage("editable-article-page");
+    articleEditionForm.addEventListener("submit", submitArticle);
+  })
+  document.getElementById("home-link").addEventListener("click", (event) => {
+    event.preventDefault();
+    location.href = "/index.html";
+  });
+  
+}
+
+function displayOnlyPage(name) {
+  homePage = document.getElementById("home-page");
+  categoryPage = document.getElementById("category-page");
+  editableArticlePage = document.getElementById("editable-article-page")
+  articlePage = document.getElementById("article-page");
+  searchPage = document.getElementById("search-page");
+  adminPage = document.getElementById("admin-page");
+
+  homePage.style.display = "none";
+  categoryPage.style.display = "none";
+  editableArticlePage.style.display = "none"
+  articlePage.style.display = "none";
+  searchPage.style.display = "none";
+  adminPage.style.display = "none"
+
+  document.getElementById(name).style.display = "block"
+}
 
 /**
  * Función temporal para probar las interacciones con el backend.
@@ -16,10 +73,6 @@ function test() {
   // searchArticlesByCategory();
   // editArticle();
   // getArticlesToReview();
-
-  document.getElementById("creation-form").addEventListener("submit", submitArticle);
-  document.getElementById("edition-form").addEventListener("submit", editArticle);
-  document.getElementById("approval-form").addEventListener("submit", approveArticle);
 }
 
 /**
