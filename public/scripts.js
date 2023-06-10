@@ -34,9 +34,34 @@ function init() {
   })
   document.getElementById("home-link").addEventListener("click", (event) => {
     event.preventDefault();
-    location.href = "/index.html";
+    displayOnlyPage("home-page");
   });
-  
+  document.getElementById("header-search").addEventListener("keypress", (event) => {
+    if(event.key == "Enter" && event.currentTarget.value !== "") {
+      searchArticlesByTitle(event.currentTarget.value);
+      event.currentTarget.value = "";
+    }
+  });
+  document.getElementById("header-search-button").addEventListener("click", () => {
+    let searchBar = document.getElementById("header-search");
+    if(searchBar.value !== "") {
+      searchArticlesByTitle(searchBar.value);
+      searchBar.value = "";
+    }
+  });
+  document.getElementById("home-search").addEventListener("keypress", (event) => {
+    if(event.key == "Enter" && event.currentTarget.value !== "") {
+      searchArticlesByTitle(event.currentTarget.value);
+      event.currentTarget.value = "";
+    }
+  });
+  document.getElementById("home-search-button").addEventListener("click", () => {
+    let searchBar = document.getElementById("home-search");
+    if(searchBar.value !== "") {
+      searchArticlesByTitle(searchBar.value);
+      searchBar.value = "";
+    }
+  });
 }
 
 function displayOnlyPage(name) {
@@ -71,7 +96,7 @@ function test() {
   // approveArticle();
   // searchArticlesByTitle();
   // searchArticlesByCategory();
-  // editArticle();
+  // submitEditedArticle();
   // getArticlesToReview();
 }
 
@@ -99,17 +124,42 @@ async function fetchAPI(method, route, body) {
  * Obtiene todos los artículos aceptados que coinciden
  * en título con un parámetro.
  */
-async function searchArticlesByTitle() {
-  // TODO: Obtener el título de la barra de búsqueda.
-  const title = "Test title";
-
+async function searchArticlesByTitle(title) {
   const resultData = await fetchAPI(
     "GET", "/?" + new URLSearchParams({ name: title })
   );
 
-  // TODO: Mostrar los artículos encontrados.
-  console.log("Resultado:");
-  console.log(resultData);
+  document.getElementById("search-page-title").innerText = "Resultados para \"" + title + "\"";
+  let searchResultsContainer = document.getElementById("search-results");
+
+  while(searchResultsContainer.hasChildNodes()) {
+    searchResultsContainer.removeChild(searchResultsContainer.firstChild);
+  }
+
+  resultData.item.forEach(result => {
+    let listElement = document.createElement("li");
+    listElement.innerText = result.autor + " | " + result.titulo;
+    listElement.addEventListener("click", async () => getArticle(result._id));
+    searchResultsContainer.appendChild(listElement);
+  });
+
+  displayOnlyPage("search-page");
+}
+
+async function getArticle(id) {
+  const article = await fetchAPI(
+    "GET", "/?" + new URLSearchParams({ id })
+  );
+  const articleData = article.item;
+
+  document.getElementById("article-title").innerText = articleData.titulo;
+  document.getElementById("article-category").innerText = articleData.categoria;
+  document.getElementById("article-description").innerText = articleData.descripcion;
+  document.getElementById("article-distributors").innerText = articleData.distribuidores;
+  document.getElementById("article-references").innerText = articleData.referencias;
+  document.getElementById("article-author").innerText = articleData.autor;
+
+  displayOnlyPage("article-page");
 }
 
 /**
@@ -145,7 +195,7 @@ async function submitArticle(event) {
 /**
  * Edita un artículo y lo deja pendiente de aprobación por el admin.
  */
-async function editArticle(event) {
+async function submitEditedArticle(event) {
   event.preventDefault();
 
   const formData = new FormData(event.currentTarget);

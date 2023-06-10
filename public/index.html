@@ -14,14 +14,15 @@
             <img class="icon" src="/assets/logo.jpg" alt="logo">
             <p>EcoWiki</p>
         </button>
-        <span id="search-span">
+        <span class="search-span">
             <input
-                id="search-bar"
+                id="header-search"
+                class="search-bar"
                 type="text"
                 placeholder="Busca artículos de energías verdes..."
                 size="30"
             >
-            <button id="search-button" class="icon-button">
+            <button id="header-search-button" class="search-button icon-button">
                 <img 
                     class="icon"
                     src="/assets/search_icon.png"
@@ -36,7 +37,25 @@
             <div id="home-page">
                 <h1 class="centered-container">Inicio</h1>
                 <p>Info del sitio...</p>
+                <br>
                 <div class="centered-container">
+                    <span class="bordered search-span">
+                        <input
+                            id="home-search"
+                            class="search-bar"
+                            type="text"
+                            placeholder="Busca artículos de energías verdes..."
+                            size="80"
+                        >
+                        <button id="home-search-button" class="search-button icon-button">
+                            <img 
+                                class="icon"
+                                src="/assets/search_icon.png"
+                                alt="busqueda"
+                            >
+                        </button>
+                    </span>
+                    <br>
                     <button id="create-button" class="main-action-button"><img src="../assets/plus_icon.png">Crear</button>
                 </div>
             </div>
@@ -88,36 +107,34 @@
 
             <div id="article-page">
                 <span id="article-header-span">
-                    <h1>[Título]</h1>
+                    <h1 id="article-title">[Título]</h1>
                 </span>
                 <button id="edit-article-button"><img src="../assets/edit.jpg" alt=""></button>
 
                 <h2>Categoría</h2>
-                <p>[Categoría]</p>
+                <p id="article-category">[Categoría]</p>
                 <br>
                 <h2>Descripción</h2>
-                <p>[Descripción]</p>
+                <p id="article-description">[Descripción]</p>
                 <br>
                 <h2>Distribuidores</h2>
-                <p>Distribuidores</p>
+                <p id="article-distributors">Distribuidores</p>
                 <br>
                 <h2>Referencias bibliográficas</h2>
-                <p>[Referencias]</p>
+                <p id="article-references">[Referencias]</p>
                 <br>
                 <h2>Autor</h2>
-                <p>[Autor]</p>
-
-                <span id="article-footer-span"><button class="main-action-button">Subir</button></span>
+                <p id="article-author">[Autor]</p>
             </div>
 
             <div id="search-page">
-                <h1>Resultados de búsqueda</h1>
-                <ul>
+                <h1 id="search-page-title">Resultados de búsqueda</h1>
+                <ul id="search-results">
                     <li>[Resultado]</li>
                     <li>[Resultado]</li>
                     <li>[Resultado]</li>
                     <li>[Resultado]</li>
-                    <li>[Resultado]</li>
+                    <li>[Autor] | [Título]</li>
                 </ul>
             </div>
 
@@ -148,20 +165,19 @@
         </main>
     
         <aside>
-            <h2>Categorías</h2>
-            <ul id="category-list">
-                <li>Categoria</li>
-                <li>Categoria</li>
-                <li>Categoria</li>
-                <li>Categoria</li>
-                <li>Categoria</li>
-                <li>Categoria</li>
-            </ul>
+            <div>
+                <h2>Categorías</h2>
+                <ul id="category-list">
+                    <li>Categoria</li>
+                    <li>Categoria</li>
+                    <li>Categoria</li>
+                    <li>Categoria</li>
+                    <li>Categoria</li>
+                    <li>Categoria</li>
+                </ul>
+            </div>
+            <button id="admin-button">Acceso a administradores</button>
         </aside>
     </div>
-
-    <footer>
-        <button style="font-size: 1.2rem"><p>Admin</p></button>
-    </footer>
 </body>
 </html>
