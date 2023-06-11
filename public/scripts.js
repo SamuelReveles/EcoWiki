@@ -12,15 +12,10 @@ let adminIsReadingArticle = false;
 let lastSearch = "";
 
 let categories = [
-  "Categoría 1",
-  "Categoría 2",
-  "Categoría 3"
-];
-
-let descriptions = [
-  "Descripcion 1",
-  "Descripcion 2",
-  "Descripcion 3"
+  { name: "Energías de viento", description: "Energías producidas por impulso del viento sobre algún mecanismo." },
+  { name: "Energías del sol", description: "Energías producidas gracias a la luz, radiación o calor del sol." },
+  { name: "Energías de materia", description: "Energías producidas al procesar cierta materia que guarda energía química o potencial." },
+  { name: "Energías terrestres", description: "Energías obtenidas de la tierra o el subsuelo." },
 ];
 
 document.addEventListener("DOMContentLoaded", init);
@@ -70,11 +65,22 @@ function init() {
       searchBar.value = "";
     }
   });
+  categories.forEach(category => {
+    let listItem = document.createElement("li");
+    listItem.innerText = category.name;
+    listItem.addEventListener("click", () => {
+      loadCategory(category.name);
+    });
+    document.getElementById("category-list").appendChild(listItem);
+  });
   document.getElementById("return-button").addEventListener("click", () => {
     if(adminIsReadingArticle)
       goToAdminPage();
     else {
-      searchArticlesByTitle(lastSearch);
+      if(categories.find(cat => cat.name === lastSearch) !== undefined)
+        loadCategory(lastSearch);
+      else
+        searchArticlesByTitle(lastSearch);
     }
   });
   document.getElementById("edit-article-button").addEventListener("click", () => editArticle());
@@ -194,16 +200,29 @@ function editArticle() {
 /**
  * Obtiene todos los artículos que tienen cierta categoría.
  */
-async function searchArticlesByCategory() {
-  const category = "Test category";
-
+async function loadCategory(category) {
+  lastSearch = category;
   const resultData = await fetchAPI(
-    "GET", "/?" + new URLSearchParams({ category: category })
+    "GET", "/?" + new URLSearchParams({ category })
   );
 
-  // TODO: Mostrar los artículos encontrados.
-  console.log("Resultado:");
-  console.log(resultData);
+  const selectedCategory = categories.find(cat => cat.name === category);
+
+  document.getElementById("category-title").innerText = "Categoría - " + selectedCategory.name;
+  document.getElementById("category-description").innerText = selectedCategory.description;
+
+  let categoryArticlesContainer = document.getElementById("category-articles-container");
+  while(categoryArticlesContainer.hasChildNodes())
+    categoryArticlesContainer.removeChild(categoryArticlesContainer.firstChild);
+
+  resultData.item.forEach(result => {
+    let listItem = document.createElement("li");
+    listItem.innerText = result.autor + " | " + result.titulo;
+    listItem.addEventListener("click", () => loadArticle(result._id, false));
+    categoryArticlesContainer.appendChild(listItem);
+  })
+
+  displayOnlyPage("category-page");
 }
 
 /**
@@ -230,17 +249,6 @@ async function submitEditedArticle(event) {
   const resultData = await fetchAPI("PUT", "/", formData);
 
   displayOnlyPage("home-page");
-}
-
-/**
- * Obtiene todas las categorías de artículos de la BD.
- */
-async function getCategories() {
-  const resultData = await fetchAPI("GET", "/category");
-
-  // TODO: Mostrar las categorías en la barra lateral.
-  console.log("Resultado:");
-  console.log(resultData);
 }
 
 /**

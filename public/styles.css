@@ -280,6 +280,11 @@ aside > h2 {
   cursor: pointer;
 }
 
+#category-articles-container > li:hover {
+  background-color: var(--accent-color);
+  cursor: pointer;
+}
+
 .article-list > li p {
   width: 100%;
   border-radius: 5px;
