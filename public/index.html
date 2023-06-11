@@ -36,7 +36,10 @@
         <main style="font-size: 1.2rem;">
             <div id="home-page">
                 <h1 class="centered-container">Inicio</h1>
-                <p>Info del sitio...</p>
+                <p>Bienvenid@ a EcoWiki, una wiki con información verificable de energías renovables y sus proveedores.</p>
+                <p>Busca artículos con la barra de esta sección o la barra superior, podrás entrar a los diferentes resultados e incluso colaborar editándolos.</p>
+                <p>Crea un nuevo artículo desde esta sección.</p>
+                <p>Todos los cambios en los artículos son validados por los administradores del sitio usando las referencias provistas.</p>
                 <br>
                 <div class="centered-container">
                     <span class="bordered search-span">
@@ -79,24 +82,23 @@
             <div id="editable-article-page">
                 <form id="article-edition-form">
                     <span id="article-header-span">
-                        <input type="text" name="titulo" placeholder="Título">
+                        <input id="editable-article-title" type="text" name="titulo" placeholder="Título" required>
                     </span>
-                    <h2>Imagen</h2>
-                    <input type="file" name="imagen" accept="image/*">
                     <h2>Categoría</h2>
-                    <input type="text" name="categoria" placeholder="Categoría">
+                    <input id="editable-article-category" type="text" name="categoria" placeholder="Categoría" required>
                     <br>
                     <h2>Descripción</h2>
-                    <textarea name="descripcion" cols="100" rows="10" placeholder="Descripción"></textarea>
+                    <textarea id="editable-article-description" name="descripcion" cols="100" rows="10" placeholder="Descripción" required></textarea>
                     <br>
                     <h2>Distribuidores</h2>
-                    <textarea name="distribuidores" cols="100" rows="10" placeholder="Distribuidores"></textarea>
+                    <textarea id="editable-article-distributors" name="distribuidores" cols="100" rows="10" placeholder="Distribuidores" required></textarea>
                     <br>
                     <h2>Referencias bibliográficas</h2>
-                    <textarea name="referencias" cols="100" rows="10" placeholder="Referencias"></textarea>
+                    <textarea id="editable-article-references" name="referencias" cols="100" rows="10" placeholder="Referencias" required></textarea>
                     <br>
                     <h2>Autor</h2>
-                    <textarea name="autor" cols="50" rows="3" placeholder="Autor"></textarea>
+                    <textarea id="editable-article-author" name="autor" cols="50" rows="3" placeholder="Autor" required></textarea>
+                    <input id="editable-article-origin" type="hidden" name="origin">
                     <br>
     
                     <span id="article-footer-span">
@@ -109,7 +111,8 @@
                 <span id="article-header-span">
                     <h1 id="article-title">[Título]</h1>
                 </span>
-                <button id="edit-article-button"><img src="../assets/edit.jpg" alt=""></button>
+                <button id="return-button"><img src="../assets/back_icon.png" alt="Volver a administración"></button>
+                <button id="edit-article-button"><img src="../assets/edit.jpg" alt="Editar artículo"></button>
 
                 <h2>Categoría</h2>
                 <p id="article-category">[Categoría]</p>
@@ -129,34 +132,47 @@
 
             <div id="search-page">
                 <h1 id="search-page-title">Resultados de búsqueda</h1>
-                <ul id="search-results">
+                <ul id="search-results" class="article-list">
                     <li>[Resultado]</li>
                     <li>[Resultado]</li>
                     <li>[Resultado]</li>
                     <li>[Resultado]</li>
-                    <li>[Autor] | [Título]</li>
+                    <li>[Resultado]</li>
                 </ul>
+            </div>
+
+            <div id="admin-login-page">
+                <div>
+                    <h1>Acceso a administradores</h1>
+                    
+                    <form id="admin-login-form">
+                        <input id="admin-email" size="20" type="email" placeholder="Correo">
+                        <input id="admin-password" size="20" type="password" placeholder="Contraseña">
+                    </form>
+    
+                    <button id="admin-login-button" class="main-action-button">Ingresar</button>
+                </div>
             </div>
 
             <div id="admin-page">
                 <h1>Página de administrador</h1>
                 <br>
                 <h2>Artículos por aprobar</h2>
-                <ul>
+                <ul id="new-articles-container" class="article-list">
                     <li>[Artículo]</li>
                     <li>[Artículo]</li>
                     <li>[Artículo]</li>
                 </ul>
                 <br>
                 <h2>Solicitudes de edición</h2>
-                <ul>
+                <ul id="edited-articles-container" class="article-list">
                     <li>[Solicitud]</li>
                     <li>[Solicitud]</li>
                     <li>[Solicitud]</li>
                 </ul>
                 <br>
                 <h2>Artículos existentes</h2>
-                <ul>
+                <ul id="approved-articles-container" class="article-list">
                     <li>[Artículo]</li>
                     <li>[Artículo]</li>
                     <li>[Artículo]</li>
@@ -176,7 +192,7 @@
                     <li>Categoria</li>
                 </ul>
             </div>
-            <button id="admin-button">Acceso a administradores</button>
+            <button id="admin-access-button">Acceso a administradores</button>
         </aside>
     </div>
 </body>

@@ -17,7 +17,9 @@ const { returnItem, returnCreated, returnBadRequest } = require('../helpers/retu
 
 const createItem = async (req = request, res = response) => {
     //Subir a cloudinary y extraer el secure_url
-    const { secure_url } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath);
+    let secure_url = "";
+    if(req.files)
+        ({ secure_url } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath));
 
     const item = new Item({
         titulo: req.body.titulo,
@@ -36,7 +38,9 @@ const createItem = async (req = request, res = response) => {
 
 const editItem = async (req = request, res = response) => {
     //Subir a cloudinary y extraer el secure_url
-    const { secure_url } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath);
+    let secure_url = "";
+    if(req.files)
+        ({ secure_url } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath));
 
     if( !req.body.titulo || !req.body.categoria || !req.body.descripcion ||
         !req.body.distribuidores || !req.body.referencias || !req.body.autor || !req.body.origin) return returnBadRequest(res);

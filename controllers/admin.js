@@ -13,7 +13,7 @@ const getItem = async (req = request, res = response) => {
 
 const deleteItem = async (req = request, res = response) => {
     if(!req.body.id) return returnBadRequest(res);
-    await Item.findOneAndDelete(req.body.id);
+    await Item.findByIdAndDelete(req.body.id);
     returnAccepted(res, true);
 }
 
@@ -30,10 +30,12 @@ const acceptItem = async (req = request, res = response) => {
                 await Item.findByIdAndUpdate(item._id, item);
                 await Item.findByIdAndDelete(req.body.id);
 
-                const nombreArr = item.imagen.split('/');
-                const nombre = nombreArr[nombreArr.length - 1];
-                const [ public_id, extension ] = nombre.split('.');
-                await cloudinary.uploader.destroy(public_id);
+                if(item.imagen !== "") {
+                    const nombreArr = item.imagen.split('/');
+                    const nombre = nombreArr[nombreArr.length - 1];
+                    const [ public_id, extension ] = nombre.split('.');
+                    await cloudinary.uploader.destroy(public_id);
+                }
             }
             else await Item.findByIdAndUpdate(req.body.id, {aceptado: true});
         }
@@ -50,7 +52,7 @@ const acceptItem = async (req = request, res = response) => {
     else return returnBadRequest(res);
 }
 
-const accessAdmin = (req = request, res = response) => returnAccess(res, (req.query.password === 'EcoWikiAdmin'));
+const accessAdmin = (req = request, res = response) => returnAccess(res, (req.query.email === "admin@ecowiki.org" && req.query.password === 'EcoWikiAdmin'));
 
 module.exports = {
     acceptItem,

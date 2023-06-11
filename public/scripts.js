@@ -1,13 +1,15 @@
-// document.addEventListener("DOMContentLoaded", test);
-
 let homePage;
 let categoryPage;
 let editableArticlePage;
 let articlePage;
 let searchPage;
+let adminLoginPage;
 let adminPage;
 
-let articleEditionForm;
+let currentArticleData;
+let editingNewArticle = false;
+let adminIsReadingArticle = false;
+let lastSearch = "";
 
 let categories = [
   "Categoría 1",
@@ -24,13 +26,19 @@ let descriptions = [
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
-
   displayOnlyPage("home-page");
-  articleEditionForm = document.getElementById("article-edition-form");
+  
+  document.getElementById("article-edition-form").addEventListener("submit", (event) => {
+    if(editingNewArticle)
+      submitArticle(event);
+    else
+      submitEditedArticle(event);
+  });
   document.getElementById("create-button").addEventListener("click", (event) => {
     event.preventDefault();
+    editingNewArticle = true;
+    document.getElementById("article-edition-form").reset();
     displayOnlyPage("editable-article-page");
-    articleEditionForm.addEventListener("submit", submitArticle);
   })
   document.getElementById("home-link").addEventListener("click", (event) => {
     event.preventDefault();
@@ -62,6 +70,18 @@ function init() {
       searchBar.value = "";
     }
   });
+  document.getElementById("return-button").addEventListener("click", () => {
+    if(adminIsReadingArticle)
+      goToAdminPage();
+    else {
+      searchArticlesByTitle(lastSearch);
+    }
+  });
+  document.getElementById("edit-article-button").addEventListener("click", () => editArticle());
+  document.getElementById("admin-access-button").addEventListener("click", () => {
+    displayOnlyPage("admin-login-page");
+  });
+  document.getElementById("admin-login-button").addEventListener("click", loginAdmin);
 }
 
 function displayOnlyPage(name) {
@@ -70,6 +90,7 @@ function displayOnlyPage(name) {
   editableArticlePage = document.getElementById("editable-article-page")
   articlePage = document.getElementById("article-page");
   searchPage = document.getElementById("search-page");
+  adminLoginPage = document.getElementById("admin-login-page");
   adminPage = document.getElementById("admin-page");
 
   homePage.style.display = "none";
@@ -77,27 +98,10 @@ function displayOnlyPage(name) {
   editableArticlePage.style.display = "none"
   articlePage.style.display = "none";
   searchPage.style.display = "none";
+  adminLoginPage.style.display = "none";
   adminPage.style.display = "none"
 
   document.getElementById(name).style.display = "block"
-}
-
-/**
- * Función temporal para probar las interacciones con el backend.
- */
-function test() {
-  console.log("Testing API functions...");
-
-  // Descomentar la función a probar:
-
-  // submitArticle();
-  // getCategories();
-  // loginAdmin();
-  // approveArticle();
-  // searchArticlesByTitle();
-  // searchArticlesByCategory();
-  // submitEditedArticle();
-  // getArticlesToReview();
 }
 
 /**
@@ -125,6 +129,7 @@ async function fetchAPI(method, route, body) {
  * en título con un parámetro.
  */
 async function searchArticlesByTitle(title) {
+  lastSearch = title;
   const resultData = await fetchAPI(
     "GET", "/?" + new URLSearchParams({ name: title })
   );
@@ -139,18 +144,26 @@ async function searchArticlesByTitle(title) {
   resultData.item.forEach(result => {
     let listElement = document.createElement("li");
     listElement.innerText = result.autor + " | " + result.titulo;
-    listElement.addEventListener("click", async () => getArticle(result._id));
+    listElement.addEventListener("click", async () => loadArticle(result._id, false));
     searchResultsContainer.appendChild(listElement);
   });
 
   displayOnlyPage("search-page");
 }
 
-async function getArticle(id) {
-  const article = await fetchAPI(
-    "GET", "/?" + new URLSearchParams({ id })
-  );
+async function loadArticle(id, isForAdmin) {
+  let article;
+
+  if(isForAdmin) {
+    article = await fetchAPI("GET", "/admin/?" + new URLSearchParams({ id }));
+    document.getElementById("edit-article-button").style.display = "none";
+  }
+  else {
+    article = await fetchAPI("GET", "/?" + new URLSearchParams({ id }));
+    document.getElementById("edit-article-button").style.display = "block";
+  }
   const articleData = article.item;
+  currentArticleData = articleData;
 
   document.getElementById("article-title").innerText = articleData.titulo;
   document.getElementById("article-category").innerText = articleData.categoria;
@@ -160,6 +173,22 @@ async function getArticle(id) {
   document.getElementById("article-author").innerText = articleData.autor;
 
   displayOnlyPage("article-page");
+}
+
+function editArticle() {
+  const articleData = currentArticleData;
+  currentArticleData = null;
+  editingNewArticle = false;
+
+  document.getElementById("editable-article-title").value = articleData.titulo;
+  document.getElementById("editable-article-category").value = articleData.categoria;
+  document.getElementById("editable-article-description").value = articleData.descripcion;
+  document.getElementById("editable-article-distributors").value = articleData.distribuidores;
+  document.getElementById("editable-article-references").value = articleData.referencias;
+  document.getElementById("editable-article-author").value = articleData.autor;
+  document.getElementById("editable-article-origin").value = articleData._id;
+
+  displayOnlyPage("editable-article-page");
 }
 
 /**
@@ -187,9 +216,7 @@ async function submitArticle(event) {
 
   const resultData = await fetchAPI("POST", "/", formData);
 
-  // TODO: Indicar al usuario la creación de su artículo.
-  console.log("Resultado:");
-  console.log(resultData);
+  displayOnlyPage("home-page");
 }
 
 /**
@@ -202,9 +229,7 @@ async function submitEditedArticle(event) {
 
   const resultData = await fetchAPI("PUT", "/", formData);
 
-  // TODO: Indicar y bloquear la edición del artículo.
-  console.log("Resultado:");
-  console.log(resultData);
+  displayOnlyPage("home-page");
 }
 
 /**
@@ -222,55 +247,116 @@ async function getCategories() {
  * Permite la autenticación del admin.
  */
 async function loginAdmin() {
-  // TODO: Obtener password desde un input.
-  const password = "EcoWikiAdmin";
+  const email = document.getElementById("admin-email").value;
+  const password = document.getElementById("admin-password").value;
 
   const resultData = await fetchAPI(
     "GET", "/admin/access?"
-    + new URLSearchParams({ password })
+    + new URLSearchParams({ email, password })
   );
 
-  // TODO: Reaccionar a la validación de password.
-  console.log("Resultado:");
-  console.log(resultData);
+  document.getElementById("admin-login-form").reset();
+
+  if(resultData === "Access allowed")
+    goToAdminPage();
+  else
+    alert("Información de acceso incorrecta.");
+}
+
+async function goToAdminPage() {
+  await loadArticlesToReview();
+  await loadApprovedArticles();
+  displayOnlyPage("admin-page");
 }
 
 /**
  * Obtiene todos los artículos pendientes de revisión
  * por el admin.
  */
-async function getArticlesToReview() {
+async function loadArticlesToReview() {
   const resultData = await fetchAPI("GET", "/admin");
 
-  // TODO: Mostrar los artículos a revisar.
-  console.log("Resultado:");
-  console.log(resultData);
+  let newArticlesContainer = document.getElementById("new-articles-container");
+  while(newArticlesContainer.hasChildNodes())
+    newArticlesContainer.removeChild(newArticlesContainer.firstChild);
+  let editedArticlesContainer = document.getElementById("edited-articles-container");
+  while(editedArticlesContainer.hasChildNodes())
+    editedArticlesContainer.removeChild(editedArticlesContainer.firstChild);
+  
+  resultData.item.forEach(result => {
+    let approveButton = createAdminActionButton("approve");
+    approveButton.addEventListener("click", () => approveArticle(result._id));
+    let rejectButton = createAdminActionButton("reject");
+    rejectButton.addEventListener("click", () => deleteArticle(result._id));
+    let adminActions = document.createElement("span");
+    adminActions.appendChild(approveButton);
+    adminActions.appendChild(rejectButton);
+    let itemText = document.createElement("p");
+
+    let listItem = document.createElement("li");
+    itemText.innerText = result.autor + " | " + result.titulo;
+    itemText.addEventListener("click", () => loadArticle(result._id, true));
+
+    listItem.appendChild(itemText);
+    listItem.appendChild(adminActions);
+
+    if(result.editado)
+      editedArticlesContainer.appendChild(listItem);
+    else
+      newArticlesContainer.appendChild(listItem);
+  });
+}
+
+function createAdminActionButton(action, articleId) {
+  let id = articleId;
+  let button = document.createElement("button");
+  let img = document.createElement("img");
+  img.src = "../assets/" + action + "_icon.png";
+  button.appendChild(img);
+  return button;
+}
+
+async function loadApprovedArticles() {
+  const resultData = await fetchAPI("GET", "/");
+
+  let approvedArticlesContainer = document.getElementById("approved-articles-container");
+  while(approvedArticlesContainer.hasChildNodes())
+    approvedArticlesContainer.removeChild(approvedArticlesContainer.firstChild);
+
+  resultData.item.forEach(result => {
+    let deleteButton = createAdminActionButton("reject");
+    deleteButton.addEventListener("click", () => deleteArticle(result._id));
+    let itemText = document.createElement("p");
+    itemText.innerText = result.autor + " | " + result.titulo;
+    itemText.addEventListener("click", () => loadArticle(result._id, true));
+    let listItem = document.createElement("li");
+    listItem.appendChild(itemText);
+    listItem.appendChild(deleteButton);
+    approvedArticlesContainer.appendChild(listItem);
+  });
 }
 
 /**
  * Permite que el administrador apruebe un artículo.
  */
-async function approveArticle(event) {
-  event.preventDefault();
+async function approveArticle(id) {
+  const formData = new FormData();
+  formData.append("id", id);
+  formData.append("accepted", true);
 
-  const formData = new FormData(event.currentTarget);
-  const resultData = await fetchAPI("PUT", "/admin", formData);
+  await fetchAPI("PUT", "/admin", formData);
 
-  // TODO: Reaccionar a la aceptación del artículo.
-  console.log("Resultado:");
-  console.log(resultData);
+  await goToAdminPage();
 }
 
 /**
  * Borra un artículo con cierto ID.
  */
-async function deleteArticle() {
-  // TODO: Obtener el id del artículo a borrar.
-  const data = { id: undefined }
+async function deleteArticle(id) {
+  const formData = new FormData();
+  formData.append("id", id);
 
-  const resultData = await fetchAPI("DELETE", "/admin", data);
+  await fetchAPI("DELETE", "/admin", formData);
 
-  // TODO: Reaccionar al artículo borrado.
-  console.log("Resultado:");
-  console.log(resultData);
+  await goToAdminPage();
 }
