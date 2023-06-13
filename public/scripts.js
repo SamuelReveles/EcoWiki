@@ -161,10 +161,12 @@ async function loadArticle(id, isForAdmin) {
   let article;
 
   if(isForAdmin) {
+    adminIsReadingArticle = true;
     article = await fetchAPI("GET", "/admin/?" + new URLSearchParams({ id }));
     document.getElementById("edit-article-button").style.display = "none";
   }
   else {
+    adminIsReadingArticle = false;
     article = await fetchAPI("GET", "/?" + new URLSearchParams({ id }));
     document.getElementById("edit-article-button").style.display = "block";
   }
